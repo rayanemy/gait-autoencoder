@@ -1,10 +1,18 @@
 # MVP IMU — Détection d'anomalies de marche
 
-> Projet étudiant réalisé en collaboration avec [@dhia9](https://github.com/dhia9) sur GitHub.
-> L'objectif : montrer, avec les connaissances vues en cours (Python, traitement du
-> signal, machine learning non supervisé), qu'une **centrale inertielle (IMU)** placée
-> sous la semelle gauche suffit à repérer une marche qui s'écarte de la marche
-> normale de référence **GAITEX**.
+Projet étudiant réalisé en collaboration avec [@dhia9](https://github.com/dhia9) sur GitHub.
+L'objectif : montrer, avec les connaissances vues en cours (Python, traitement du signal, machine learning non supervisé), qu'une centrale inertielle (IMU) placée sous la semelle gauche suffit à repérer une marche qui s'écarte de la marche normale de référence.
+
+## Crédits : jeu de données GAITEX
+
+Les données de marche utilisées dans ce projet proviennent du jeu de données public
+**GAITEX**, mis à disposition par ses auteurs. Tous nos remerciements à eux.
+
+> Spilz, A., Oppel, H., Werner, J., Stucke-Straub, K., Capanni, F. & Munz, M.
+> **GAITEX: Human motion dataset of impaired gait and rehabilitation exercises using
+> inertial and optical sensors.** *Scientific Data* **13**, 11 (2025).
+> https://doi.org/10.1038/s41597-025-06439-x
+
 
 ## D'où vient le projet
 
