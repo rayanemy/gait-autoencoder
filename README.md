@@ -1,4 +1,4 @@
-# MVP IMU — Détection d'anomalies de marche
+# MVP IMU - Détection d'anomalies de marche
 
 Projet étudiant réalisé en collaboration avec [@dhia9](https://github.com/dhia9) sur GitHub.
 L'objectif : montrer, avec les connaissances vues en cours (Python, traitement du signal, machine learning non supervisé), qu'une centrale inertielle (IMU) placée sous la semelle gauche suffit à repérer une marche qui s'écarte de la marche normale de référence.
@@ -22,7 +22,7 @@ orthèse. Plutôt que d'apprendre à reconnaître chaque pathologie (on n'a pas 
 d'exemples « anormaux »), on a choisi une approche **non supervisée** : le modèle
 n'apprend que ce qu'est une marche *normale*, et tout ce qui s'en éloigne est signalé
 comme anomalie. C'est simple, honnête vis-à-vis des données disponibles, et ça reste
-explicable — ce qu'on cherchait pour un projet d'école.
+explicable; ce qu'on cherchait pour un projet d'école.
 
 ## Le pipeline en un schéma
 
