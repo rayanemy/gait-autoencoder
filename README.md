@@ -1,7 +1,7 @@
 # Détection d'anomalies de marche
 
-Projet étudiant réalisé en collaboration avec [@dhia9](https://github.com/dhia9) sur GitHub. 
-L'objectif : montrer, avec les connaissances vues en cours (Python, traitement du signal, machine learning non supervisé), qu'une centrale inertielle (IMU) placée sous la semelle gauche suffit à repérer une marche qui s'écarte de la marche normale de référence.
+Projet réalisé en collaboration avec [@dhia9](https://github.com/dhia9). 
+Objectif :  montrer, avec nos connaissances (Python, traitement du signal, machine learning), qu'une centrale inertielle (IMU) placée sous la semelle gauche suffit à repérer une marche qui s'écarte de la marche normale de référence.
 
 > En relation avec : [P2I](https://github.com/lpeyr/p2i)
 
@@ -19,12 +19,9 @@ Les données de marche utilisées dans ce projet proviennent du jeu de données 
 ## D'où vient le projet
 
 On est partis d'un jeu de données réel d'IMU Xsens (capteur du pied gauche). Deux
-situations sont enregistrées : `data/ng/` = marche normale, `data/gwo/` = marche avec
-orthèse. Plutôt que d'apprendre à reconnaître chaque pathologie (on n'a pas assez
-d'exemples « anormaux »), on a choisi une approche **non supervisée** : le modèle
-n'apprend que ce qu'est une marche *normale*, et tout ce qui s'en éloigne est signalé
-comme anomalie. C'est simple, honnête vis-à-vis des données disponibles, et ça reste
-explicable; ce qu'on cherchait pour un projet d'école.
+situations sont enregistrées : `data/ng/` = marche normale, `data/gwo/` = marche avec orthèse. Plutôt que d'apprendre à reconnaître chaque pathologie (on n'a pas assez d'exemples « anormaux »), on a choisi une approche **non supervisée** : le modèle n'apprend que ce qu'est une marche *normale*, et tout ce qui s'en éloigne est signalé comme anomalie.
+
+Le dossier `experiments/` garde les essais exploratoires et comparatifs qu'on a fait ; il n'est pas nécessaire pour lancer l'interface Streamlit.
 
 ## Le pipeline en un schéma
 
@@ -41,15 +38,11 @@ flowchart TD
     H -- non --> J["Anomalie vs GAITEX"]
 ```
 
-On ne score que les fenêtres qui « ressemblent » à de la marche rythmique : une pause,
-une transition ou la pose du capteur ne sont pas comptées comme des anomalies.
+On ne score que les fenêtres qui « ressemblent » à de la marche rythmique : une pause, une transition ou la pose du capteur ne sont pas comptées comme des anomalies.
 
 ## C'est quoi une *feature* ?
 
-Une **feature** (ou *caractéristique*) est un nombre qui résume une propriété utile du
-signal. Un algorithme de ML ne sait pas lire directement une courbe d'angle de
-1 000 points ; on lui fournit donc, pour chaque fenêtre de 2 secondes et chaque axe
-(yaw, pitch, roll), des résumés statistiques et de forme :
+Une **feature** (ou *caractéristique*) est un nombre qui résume une propriété utile du signal. Un algorithme de ML ne sait pas lire directement une courbe d'angle de 1 000 points ; on lui fournit donc, pour chaque fenêtre de 2 secondes et chaque axe (yaw, pitch, roll), des résumés statistiques et de forme :
 
 | Feature | Ce qu'elle mesure |
 |---|---|
@@ -60,8 +53,7 @@ signal. Un algorithme de ML ne sait pas lire directement une courbe d'angle de
 | `periodicity`, `period_s` | à quel point le mouvement est rythmé (autocorrélation) et la durée d'un cycle |
 | `yaw_pitch_corr`, … | corrélation entre deux axes (coordination du pied) |
 
-Une marche anormale (pronation, marche sur les pointes…) modifie ces valeurs, et c'est
-exactement ce que le modèle apprend à repérer.
+Une marche anormale (pronation, marche sur les pointes…) modifie ces valeurs, et c'est exactement ce que le modèle apprend à repérer.
 
 ## C'est quoi une *Isolation Forest* ?
 

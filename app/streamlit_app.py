@@ -52,38 +52,42 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-THEME_BASE = st.get_option("theme.base")
-DARK_THEME = THEME_BASE == "dark"
-THEME_COLORS = {
-    "accent": "#60a5fa" if DARK_THEME else "#2563eb",
-    "accent_2": "#22c55e" if DARK_THEME else "#16a34a",
-    "warning": "#f59e0b" if DARK_THEME else "#b45309",
-    "danger": "#f87171" if DARK_THEME else "#b91c1c",
-    "ink": "#f8fafc" if DARK_THEME else "#172033",
-    "muted": "#cbd5e1" if DARK_THEME else "#607085",
-    "line": "rgba(148, 163, 184, 0.34)" if DARK_THEME else "rgba(23, 32, 51, 0.18)",
-    "soft": "transparent",
-    "surface": "#1f2937" if DARK_THEME else "#ffffff",
-    "surface_strong": "#162033" if DARK_THEME else "#ffffff",
-}
-
 st.markdown(
     """
     <style>
     :root {
-      --accent: __ACCENT__;
-      --accent-2: __ACCENT_2__;
-      --warning: __WARNING__;
-      --danger: __DANGER__;
-      --ink: __INK__;
-      --muted: __MUTED__;
-      --line: __LINE__;
-      --soft: __SOFT__;
-      --surface: __SURFACE__;
-      --surface-strong: __SURFACE_STRONG__;
+      --fallback-accent: #2563eb;
+      --fallback-accent-2: #16a34a;
+      --fallback-warning: #b45309;
+      --fallback-danger: #b91c1c;
+      --fallback-ink: currentColor;
+      --fallback-surface: color-mix(in srgb, currentColor 5%, transparent);
+      --fallback-surface-strong: color-mix(in srgb, currentColor 8%, transparent);
+      --accent: var(--primary-color, var(--fallback-accent));
+      --accent-2: var(--fallback-accent-2);
+      --warning: var(--fallback-warning);
+      --danger: var(--fallback-danger);
+      --ink: var(--text-color, var(--fallback-ink));
+      --muted: color-mix(in srgb, var(--text-color, var(--fallback-ink)) 68%, transparent);
+      --line: color-mix(in srgb, var(--text-color, var(--fallback-ink)) 20%, transparent);
+      --soft: transparent;
+      --surface: var(--secondary-background-color, var(--fallback-surface));
+      --surface-strong: color-mix(
+        in srgb,
+        var(--secondary-background-color, var(--fallback-surface-strong)) 88%,
+        var(--background-color, var(--fallback-surface-strong))
+      );
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fallback-accent: #60a5fa;
+        --fallback-accent-2: #22c55e;
+        --fallback-warning: #f59e0b;
+        --fallback-danger: #f87171;
+      }
     }
     .main .block-container {
-      padding-top: 1.4rem;
+      padding-top: 1.0rem;
       max-width: 1180px;
     }
     h1, h2, h3 {
@@ -107,8 +111,8 @@ st.markdown(
     }
     .section-band {
       background: var(--soft);
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
+      border-top: 2px solid var(--line);
+      border-bottom: 0px solid var(--line);
       padding: 0.9rem 1rem;
       margin: 1.1rem 0;
     }
@@ -259,28 +263,32 @@ st.markdown(
         grid-template-columns: 1fr;
       }
     }
-    .stMetric {
-      background: var(--surface);
+    .stMetric,
+    div[data-testid="stMetric"] {
+      background: var(--surface-strong) !important;
       border: 1px solid var(--line);
       border-radius: 6px;
       padding: 0.65rem 0.75rem;
+      color: var(--ink);
+    }
+    div[data-testid="stMetric"] * {
+      background: transparent !important;
+    }
+    div[data-testid="stMetricLabel"],
+    div[data-testid="stMetricLabel"] p {
+      color: var(--muted) !important;
+    }
+    div[data-testid="stMetricValue"],
+    div[data-testid="stMetricValue"] div,
+    div[data-testid="stMetricValue"] p {
+      color: var(--ink) !important;
     }
     .stButton>button {
       border-radius: 6px;
       font-weight: 700;
     }
     </style>
-    """
-    .replace("__ACCENT__", THEME_COLORS["accent"])
-    .replace("__ACCENT_2__", THEME_COLORS["accent_2"])
-    .replace("__WARNING__", THEME_COLORS["warning"])
-    .replace("__DANGER__", THEME_COLORS["danger"])
-    .replace("__INK__", THEME_COLORS["ink"])
-    .replace("__MUTED__", THEME_COLORS["muted"])
-    .replace("__LINE__", THEME_COLORS["line"])
-    .replace("__SOFT__", THEME_COLORS["soft"])
-    .replace("__SURFACE__", THEME_COLORS["surface"])
-    .replace("__SURFACE_STRONG__", THEME_COLORS["surface_strong"]),
+    """,
     unsafe_allow_html=True,
 )
 
@@ -554,12 +562,12 @@ with st.sidebar:
     run_button = st.button("Lancer le scoring", type="primary", width="stretch", key="sidebar_run_scoring")
 
 
-st.markdown('<div class="project-kicker">Projet semelle connectée</div>', unsafe_allow_html=True)
+st.markdown('<div class="project-kicker">Semelle connectée (P2I2 - 221C)</div>', unsafe_allow_html=True)
 st.title("Détection d'anomalies de marche par IMU gauche")
 st.markdown(
     """
     <p class="lead">
-    Démonstration machine learning : les données IMU sauvegardées sur carte SD par la semelle gauche
+    Démonstration machine learning par <a href="https://github.com/rayanemy" target="_blank">@rayanemy</a> et <a href="https://github.com/dhia9" target="_blank">@dhia9</a> : les données IMU sauvegardées sur carte SD par la semelle gauche
     sont converties en angles, comparées à une norme GAITEX, puis scorées par Isolation Forest.
     </p>
     """,
@@ -585,10 +593,15 @@ norm_df = load_csv_cached(str(NORM_CSV))
 summary = dataframe_summary(norm_df)
 
 st.markdown('<div class="section-band"><strong>1. Norme GAITEX utilisée pour l’apprentissage</strong></div>', unsafe_allow_html=True)
-explain(
-    "Ce que contient la norme",
-    "La norme est construite à partir de data/ng uniquement. Chaque CSV brut fournit les quaternions de la semelle gauche, puis le pipeline garde yaw, pitch et roll à 50 Hz avec les métadonnées du sujet.",
+st.markdown(
+    """
+    <p class="muted-note">
+    La norme est construite à partir de data/ng. Chaque CSV brut fournit les quaternions de la semelle gauche, puis le pipeline garde yaw, pitch et roll à 50 Hz avec les métadonnées du sujet.
+    </p>
+    """,
+    unsafe_allow_html=True,
 )
+
 cols = st.columns(4)
 cols[0].metric("Lignes", f"{summary['rows']:,}".replace(",", " "))
 cols[1].metric("Durée approx.", f"{summary['duration']:.0f} s")
@@ -630,10 +643,8 @@ except Exception as exc:
 
 train_summary = artifact.get("train_summary", {})
 st.markdown('<div class="section-band"><strong>2. Modèle Isolation Forest</strong></div>', unsafe_allow_html=True)
-explain(
-    "Ce que le modèle apprend",
-    "Le modèle ne reçoit que des fenêtres périodiques extraites de la marche normale NG. Les débuts, fins et transitions non rythmiques ne servent pas au fit ; le modèle apprend donc la marche réellement active.",
-)
+st.markdown('<p class="muted-note"> Le modèle ne reçoit que des fenêtres périodiques extraites de la marche normale NG. Les débuts, fins et transitions non rythmiques ne servent pas au fit ; le modèle apprend donc la marche réellement active.</p>', unsafe_allow_html=True)
+
 model_cols = st.columns(6)
 model_cols[0].metric("Modèle", "IForest")
 model_cols[1].metric("Axes", ", ".join(artifact["axes"]))
