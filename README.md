@@ -8,7 +8,7 @@ Objectif :  montrer, avec nos connaissances (Python, traitement du signal, machi
 ## Crédits : jeu de données GAITEX
 
 Les données de marche utilisées dans ce projet proviennent du jeu de données public
-**GAITEX**, mis à disposition par ses auteurs. Tous nos remerciements à eux.
+GAITEX, mis à disposition par ses auteurs. Tous nos remerciements à eux.
 
 > Spilz, A., Oppel, H., Werner, J., Stucke-Straub, K., Capanni, F. & Munz, M.
 > GAITEX: Human motion dataset of impaired gait and rehabilitation exercises using
@@ -19,7 +19,7 @@ Les données de marche utilisées dans ce projet proviennent du jeu de données 
 ## D'où vient le projet
 
 On est partis d'un jeu de données réel d'IMU Xsens (capteur du pied gauche). Deux
-situations sont enregistrées : `data/ng/` = marche normale, `data/gwo/` = marche avec orthèse. Plutôt que d'apprendre à reconnaître chaque pathologie (on n'a pas assez d'exemples « anormaux »), on a choisi une approche **non supervisée** : le modèle n'apprend que ce qu'est une marche *normale*, et tout ce qui s'en éloigne est signalé comme anomalie.
+situations sont enregistrées : `data/ng/` = marche normale, `data/gwo/` = marche avec orthèse. Plutôt que d'apprendre à reconnaître chaque pathologie (on n'a pas assez d'exemples « anormaux »), on a choisi une approche non supervisée : le modèle n'apprend que ce qu'est une marche *normale*, et tout ce qui s'en éloigne est signalé comme anomalie.
 
 Le dossier `experiments/` garde les essais exploratoires et comparatifs qu'on a fait ; il n'est pas nécessaire pour lancer l'interface Streamlit.
 
@@ -42,7 +42,7 @@ On ne score que les fenêtres qui « ressemblent » à de la marche rythmique : 
 
 ## C'est quoi une *feature* ?
 
-Une **feature** (ou *caractéristique*) est un nombre qui résume une propriété utile du signal. Un algorithme de ML ne sait pas lire directement une courbe d'angle de 1 000 points ; on lui fournit donc, pour chaque fenêtre de 2 secondes et chaque axe (yaw, pitch, roll), des résumés statistiques et de forme :
+Une feature (ou *caractéristique*) est un nombre qui résume une propriété utile du signal. Un algorithme de ML ne sait pas lire directement une courbe d'angle de 1 000 points ; on lui fournit donc, pour chaque fenêtre de 2 secondes et chaque axe (yaw, pitch, roll), des résumés statistiques et de forme :
 
 | Feature | Ce qu'elle mesure |
 |---|---|
@@ -57,14 +57,12 @@ Une marche anormale (pronation, marche sur les pointes…) modifie ces valeurs, 
 
 ## C'est quoi une *Isolation Forest* ?
 
-L'**Isolation Forest** est un modèle de détection d'anomalies. L'idée est intuitive :
-**un point anormal est facile à isoler.**
+L'**Isolation Forest** est un modèle de détection d'anomalies. L'idée est intuitive : un point anormal est facile à isoler.
 
-L'algorithme construit beaucoup d'arbres (`n_estimators=300`). Pour chaque arbre, il
-choisit au hasard une feature et un seuil, coupe les données en deux, et recommence
+L'algorithme construit beaucoup d'arbres (`n_estimators=300`). Pour chaque arbre, il choisit au hasard une feature et un seuil, coupe les données en deux, et recommence
 jusqu'à isoler chaque point. Un point « normal », noyé dans la masse, demande
-**beaucoup de découpes** avant d'être isolé. Un point atypique, à l'écart des autres,
-est isolé en **très peu de découpes**.
+beaucoup de découpes avant d'être isolé. Un point atypique, à l'écart des autres,
+est isolé en très peu de découpes.
 
 ```mermaid
 flowchart TD
@@ -77,8 +75,8 @@ flowchart TD
 ```
 
 Le **score d'anomalie** = profondeur moyenne d'isolement sur tous les arbres. Plus c'est
-court, plus c'est suspect. Avantage clé pour nous : **on n'a besoin que d'exemples
-normaux** pour l'entraîner (ici uniquement `data/ng/`). Avant l'arbre, un
+court, plus c'est suspect. Avantage clé pour nous : on n'a besoin que d'exemples
+normaux pour l'entraîner (ici uniquement `data/ng/`). Avant l'arbre, un
 `StandardScaler` met toutes les features à la même échelle.
 
 ## Installation
@@ -118,6 +116,6 @@ L'application accepte soit :
 
 ## Avertissement
 
-Le score indique un **écart par rapport à la norme GAITEX**. Ce n'est **pas un
-diagnostic médical** et le modèle ne classe pas le type précis d'anomalie : il dit
+Le score indique un écart par rapport à la norme GAITEX. Ce n'est pas un
+diagnostic médical et le modèle ne classe pas le type précis d'anomalie : il dit
 seulement « cette fenêtre de marche ressemble, ou non, à une marche normale ».
